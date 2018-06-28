@@ -9,6 +9,8 @@ import Toolbar from './toolbar.js';
 import logo from './logo.svg';
 import './App.css';
 
+import dyanc from './dyanc'
+import Homer from './Home'
 require('highlight.js/styles/monokai.css');
 
 const fs = window.require('fs');
@@ -20,6 +22,8 @@ const electron_app = electron.app;
 const ipc = electron.ipcRenderer;
 const remote = electron.remote;
 const dialog = remote.dialog;
+
+const Home = dyanc(() => import('./Home'))
 
 class App extends Component {
   constructor(props) {
@@ -52,7 +56,8 @@ class App extends Component {
 
     this.state = {
       markdownSrc: content,
-      splitPaneSize: "50%"
+      splitPaneSize: "50%",
+      homeable: false
     };
 
     this.onMarkdownChange = this.onMarkdownChange.bind(this);
@@ -81,10 +86,19 @@ class App extends Component {
     }
   }
 
+  handleClick = () => {
+    this.setState({homeable: !this.state.homeable})
+  }
+
   render() {
+    const Show = this.state.homeable ? <Home/> : null
+    console.log('showable is', this.state.homeable, Show);
     return (
       <div className="App">
         <Toolbar onClick={this.onViewChange}/>
+        {Show}
+        <Homer />
+        <button onClick={this.handleClick}>name is xiaohesong</button>
         <SplitPane split="vertical" size={this.state.splitPaneSize}>
           <div className="editor-pane">
             <Editor className="editor" value={this.state.markdownSrc} onChange={this.onMarkdownChange}/>
